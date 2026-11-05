@@ -1,0 +1,71 @@
+flowchart TD
+    mulai([Mulai]) --> halamanLogin[Buka halaman login]
+    halamanLogin --> aksiAwal{Aksi pengguna?}
+    aksiAwal -->|Login| inputLogin[/Input email dan password/]
+    aksiAwal -->|Lupa kata sandi| inputEmailReset[/Input email terdaftar/]
+    aksiAwal -->|Aktivasi akun| buatSandi[/Buat kata sandi baru dari tautan email/]
+
+    inputEmailReset --> kirimReset[Kirim tautan reset kata sandi melalui Firebase Authentication]
+    kirimReset --> infoReset[Tampilkan konfirmasi pengiriman email]
+    infoReset --> halamanLogin
+
+    buatSandi --> aktifkan[Aktifkan akun dengan peran yang sudah ditetapkan]
+    aktifkan --> halamanLogin
+
+    inputLogin --> verifikasi[Verifikasi kredensial melalui Firebase Authentication]
+    verifikasi --> valid{Kredensial valid?}
+    valid -->|Tidak| error[Tampilkan pesan kesalahan]
+    error --> inputLogin
+    valid -->|Ya| ambilPeran[Ambil data pengguna dan peran dari Cloud Firestore]
+    ambilPeran --> peran{Peran pengguna?}
+
+    peran -->|Kader| aksiKader{Aksi kader?}
+    aksiKader -->|Buat akun orang tua| inputOrtu[/Input nama orang tua, email, dan data balita/]
+    inputOrtu --> cekAkunOrtu{Akun orang tua sudah terdaftar?}
+    cekAkunOrtu -->|Belum| buatAkunOrtu[Buat akun orang tua dengan peran orang_tua melalui Cloud Function]
+    buatAkunOrtu --> simpanOrtu[(Simpan akun dan tautkan balita di Cloud Firestore)]
+    simpanOrtu --> kirimAktivasiOrtu[Kirim email aktivasi dan tautan buat kata sandi]
+    kirimAktivasiOrtu --> selesai([Selesai])
+    cekAkunOrtu -->|Sudah| tautkanOrtu[Tautkan balita ke akun orang tua yang sudah ada]
+    tautkanOrtu --> simpanTautan[(Simpan tautan balita di Cloud Firestore)]
+    simpanTautan --> selesai
+
+    aksiKader -->|Catat pemeriksaan| inputPeriksa[/Input data pemeriksaan: tanggal periksa, BB, TB, LK, LILA, imunisasi, dan vitamin/]
+    inputPeriksa --> hitungUsia[Hitung usia balita dalam bulan]
+    hitungUsia --> hitungZ[Hitung Z-Score BB/U, TB/U, dan BB/TB dengan metode LMS WHO tanpa IMT/U]
+    hitungZ --> klasifikasi[Klasifikasi status gizi menurut Permenkes No. 2 Tahun 2020]
+    klasifikasi --> simpanPeriksa[(Simpan data pemeriksaan ke Cloud Firestore)]
+    simpanPeriksa --> cekStunting{Z-Score TB/U kurang dari -2 SD?}
+    cekStunting -->|Ya| peringatan[Tampilkan peringatan dini risiko stunting dan tandai data sebagai prioritas]
+    peringatan --> kirimStunting[Kirim peringatan dini stunting ke bidan dan orang tua yang bersangkutan melalui FCM]
+    kirimStunting --> bidanTerima[Terima peringatan dini stunting]
+    bidanTerima --> monitor[Pantau data dan grafik pertumbuhan balita]
+    kirimStunting --> ortuNotif[Terima notifikasi otomatis di perangkat]
+    ortuNotif --> dashboardOrtu[Buka dashboard orang tua]
+    kirimStunting --> selesai
+    cekStunting -->|Tidak| selesai
+
+    peran -->|Bidan| aksiBidan{Aksi bidan?}
+    aksiBidan -->|Buat akun kader| inputKader[/Input nama dan email kader/]
+    inputKader --> buatAkunKader[Buat akun kader dengan peran kader melalui Cloud Function]
+    buatAkunKader --> simpanKader[(Simpan akun kader di Cloud Firestore)]
+    simpanKader --> kirimAktivasiKader[Kirim email aktivasi dan tautan buat kata sandi]
+    kirimAktivasiKader --> selesai
+
+    aksiBidan -->|Monitoring dan pengelolaan| monitor
+    monitor --> jadwal[Kelola jadwal Posyandu]
+    jadwal --> simpanJadwal[(Simpan jadwal ke Cloud Firestore)]
+    simpanJadwal --> notifJadwal[Kirim notifikasi jadwal baru atau diubah ke orang tua balita aktif melalui FCM]
+    simpanJadwal --> pengingat[Jadwalkan pengingat otomatis H-3 dan H-1 ke orang tua balita aktif melalui FCM]
+    notifJadwal --> artikel[Publikasikan artikel kesehatan: edukasi gizi, rekomendasi PMT, dan stimulasi tumbuh kembang]
+    pengingat --> artikel
+    artikel --> simpanArtikel[(Simpan artikel kesehatan ke Cloud Firestore)]
+    simpanArtikel --> laporan[Lihat laporan rekapitulasi data balita]
+    laporan --> selesai
+    notifJadwal --> ortuNotif
+    pengingat --> ortuNotif
+
+    peran -->|Orang tua| dashboardOrtu
+    dashboardOrtu --> grafik[Pantau grafik dan riwayat pertumbuhan anak]
+    grafik --> bacaArtikel[Baca artikel edukasi kesehatan]
+    bacaArtikel --> selesai

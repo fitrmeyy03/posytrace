@@ -46,16 +46,6 @@ android {
             )
         }
     }
-
-    splits {
-        abi {
-            // Satu APK per ABI agar unduhan kecil (setara --split-per-abi).
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = false
-        }
-    }
 }
 
 flutter {

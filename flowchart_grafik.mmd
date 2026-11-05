@@ -1,0 +1,46 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Grafik Pertumbuhan Balita
+%% Orang tua dan bidan melihat kurva pertumbuhan BB, TB, LK berdasarkan data pemeriksaan
+
+flowchart TD
+    start([Mulai]) --> pilihPeran{Peran pengguna?}
+
+    pilihPeran -->|Orang tua| grafikOrtu[Orang tua: Buka menu grafik]
+    pilihPeran -->|Bidan| grafikBidan[Bidan: Buka menu gizi balita]
+
+    grafikOrtu --> pilihAnak[Pilih data balita]
+    grafikBidan --> pilihAnak
+
+    pilihAnak --> pilihMetrik{Pilih jenis grafik?}
+    pilihMetrik -->|Berat badan| dataBB[Sistem: Ambil data berat badan per bulan]
+    pilihMetrik -->|Tinggi badan| dataTB[Sistem: Ambil data tinggi badan per bulan]
+    pilihMetrik -->|Lingkar kepala| dataLK[Sistem: Ambil data lingkar kepala per bulan]
+
+    dataBB --> renderKurva[Sistem: Render kurva pertumbuhan]
+    dataTB --> renderKurva
+    dataLK --> renderKurva
+
+    renderKurva --> adaData{Data pemeriksaan tersedia?}
+    adaData -->|Tidak| kosong[Tampilkan pesan belum ada data]
+    kosong --> pilihMetrik
+
+    adaData -->|Ya| tampilKurva[Tampilkan grafik dan status gizi terbaru]
+    tampilKurva --> bandingkan{Ada indikasi stunting atau gizi kurang?}
+
+    bandingkan -->|Tidak| selesai([Selesai])
+    bandingkan -->|Ya| rekomendasi[Tampilkan rekomendasi dan tindak lanjut]
+    rekomendasi --> notif[Sistem: Kirim notifikasi status gizi ke bidan]
+    notif --> selesai
+
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class grafikOrtu,pilihAnak,tampilKurva,rekomendasi,kosong orangtua;
+    class grafikBidan bidan;
+    class dataBB,dataTB,dataLK,renderKurva,notif sistem;
+    class pilihPeran,pilihMetrik,adaData,bandingkan decision;
+    class start,selesai terminal;

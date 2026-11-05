@@ -1,0 +1,58 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Notifikasi FCM
+%% Jenis notifikasi: imunisasi, pengukuran tersimpan, perubahan jadwal, status gizi, peringatan stunting
+
+flowchart TD
+    start([Mulai]) --> event{Peristiwa sistem?}
+
+    event -->|Pengukuran tersimpan| notifUkur[Sistem: Buat notifikasi data pengukuran tersimpan]
+    event -->|Status gizi prioritas| notifGizi[Sistem: Buat notifikasi status gizi]
+    event -->|Jadwal dibuat atau diubah| notifJadwal[Sistem: Buat notifikasi jadwal]
+    event -->|Pengingat jadwal| notifReminder[Sistem: Buat notifikasi pengingat H-3 dan H-1]
+    event -->|Peringatan stunting| notifStunting[Sistem: Buat peringatan prioritas stunting]
+
+    notifUkur --> simpanNotif[(Sistem: Simpan notifikasi)]
+    notifGizi --> simpanNotif
+    notifJadwal --> simpanNotif
+    notifReminder --> simpanNotif
+    notifStunting --> simpanNotif
+
+    simpanNotif --> tujuan{Sasaran notifikasi?}
+    tujuan -->|Orang tua| fcmOrtu[Sistem: Kirim FCM ke perangkat orang tua]
+    tujuan -->|Bidan| fcmBidan[Sistem: Kirim FCM ke perangkat bidan]
+    tujuan -->|Kader| fcmKader[Sistem: Kirim FCM ke perangkat kader]
+
+    fcmOrtu --> terimaOrtu[Orang tua: Terima notifikasi di perangkat]
+    fcmBidan --> terimaBidan[Bidan: Terima notifikasi di perangkat]
+    fcmKader --> terimaKader[Kader: Terima notifikasi di perangkat]
+
+    terimaOrtu --> bukaNotif[Buka halaman notifikasi]
+    terimaBidan --> bukaNotif
+    terimaKader --> bukaNotif
+
+    bukaNotif --> tandaiBaca[Sistem: Tandai notifikasi sebagai dibaca]
+    tandaiBaca --> detail[Buka detail notifikasi]
+    detail --> navigasi{Navigasi ke halaman tujuan?}
+
+    navigasi -->|Riwayat pengukuran| riwayat[Buka riwayat pengukuran]
+    navigasi -->|Detail jadwal| jadwal[Buka detail jadwal]
+    navigasi -->|Artikel| artikel[Buka artikel edukasi]
+    navigasi -->|Tidak| selesai([Selesai])
+
+    riwayat --> selesai
+    jadwal --> selesai
+    artikel --> selesai
+
+    classDef pengguna fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class notifUkur,notifGizi,notifJadwal,notifReminder,notifStunting,fcmOrtu,fcmBidan,fcmKader,tandaiBaca sistem;
+    class terimaOrtu,bukaNotif,riwayat,jadwal,artikel orangtua;
+    class event,tujuan,navigasi decision;
+    class simpanNotif data;
+    class start,selesai terminal;

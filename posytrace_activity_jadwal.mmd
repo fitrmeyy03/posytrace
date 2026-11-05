@@ -1,0 +1,51 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Activity Diagram PosyTrace - Pengelolaan Jadwal dan Pengingat FCM
+%% Alur: Bidan mengelola jadwal -> Sistem menyimpan -> FCM H-3/H-1 -> Orang tua menerima
+
+flowchart TD
+    start([Mulai]) --> login[/Bidan: Input email dan password/]
+    login --> verify[Sistem: Verifikasi kredensial melalui Firebase Authentication]
+    verify --> valid{Kredensial valid?}
+
+    valid -->|Tidak| error[Tampilkan pesan kesalahan]
+    error --> login
+
+    valid -->|Ya| role[Sistem: Ambil data pengguna dan peran dari Cloud Firestore]
+    role --> isBidan{Peran pengguna adalah bidan?}
+
+    isBidan -->|Tidak| denied[Tampilkan pesan akses ditolak]
+    denied --> done([Selesai])
+
+    isBidan -->|Ya| menu{Aksi bidan?}
+    menu -->|Kelola jadwal| inputSchedule[/Input tanggal, waktu, lokasi, dan jenis kegiatan/]
+    inputSchedule --> saveSchedule[(Sistem: Simpan jadwal Posyandu)]
+    saveSchedule --> notify[Sistem: Kirim notifikasi jadwal baru atau perubahan]
+    saveSchedule --> menu
+
+    notify --> parentNotif[Orang Tua: Terima notifikasi jadwal]
+    notify --> h3[Sistem: Scheduler mengirim pengingat H-3]
+    h3 --> h1[Sistem: Scheduler mengirim pengingat H-1]
+    h1 --> parentNotif
+
+    parentNotif --> parentView[Orang Tua: Lihat detail jadwal]
+    parentView --> done
+
+    menu -->|Lihat jadwal| scheduleList[Tampilkan daftar jadwal Posyandu]
+    scheduleList --> menu
+    menu -->|Keluar| done
+
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class login,inputSchedule,menu,scheduleList bidan;
+    class verify,role,notify,h3,h1 sistem;
+    class parentNotif,parentView orangtua;
+    class valid,isBidan decision;
+    class saveSchedule data;
+    class error,denied error;
+    class start,done terminal;

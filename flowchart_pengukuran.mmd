@@ -1,0 +1,53 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Pengukuran Balita dan Deteksi Stunting
+%% Fitur inti: kader mencatat BB/TB/LK, sistem hitung Z-Score BB/U, TB/U, BB/TB (LMS WHO),
+%% klasifikasi Permenkes No. 2 Tahun 2020, deteksi stunting, notifikasi bidan dan orang tua
+
+flowchart TD
+    start([Mulai]) --> dashKader[Kader: Buka menu pengukuran]
+    dashKader --> pilihBalita[Pilih data balita]
+    pilihBalita --> inputData[/Input tanggal periksa, BB, TB, LK, imunisasi, vitamin/]
+    inputData --> checkInput{Data valid?}
+
+    checkInput -->|Tidak| errorInput[Tampilkan pesan validasi input]
+    errorInput --> inputData
+
+    checkInput -->|Ya| hitungUsia[Sistem: Hitung usia balita dalam bulan]
+    hitungUsia --> hitungZ[Sistem: Hitung Z-Score BB/U, TB/U, BB/TB menggunakan LMS WHO]
+    hitungZ --> klasifikasi[Sistem: Klasifikasi status gizi sesuai Permenkes No. 2 Tahun 2020]
+    klasifikasi --> status{Status gizi?}
+
+    status -->|Gizi baik| simpan[(Sistem: Simpan data pemeriksaan)]
+    status -->|Gizi kurang| simpan
+    status -->|Gizi buruk| simpan
+    status -->|Stunting| tandai[Sistem: Tandai sebagai prioritas stunting]
+    tandai --> simpan
+
+    simpan --> tampilStatus[Kader: Lihat status gizi dan kurva pertumbuhan]
+    tampilStatus --> stunting{Z-Score TB/U kurang dari -2 SD?}
+
+    stunting -->|Tidak| selesaiKader([Selesai])
+    stunting -->|Ya| notifBidan[Sistem: Kirim peringatan stunting ke bidan]
+    notifBidan --> notifOrtu[Sistem: Kirim peringatan stunting ke orang tua]
+    notifOrtu --> validasiBidan[Bidan: Validasi data dan beri rekomendasi]
+    validasiBidan --> simpanHasil[(Sistem: Simpan status validasi dan rekomendasi)]
+    simpanHasil --> lihatOrtu[Orang tua: Lihat hasil pemeriksaan dan rekomendasi]
+    lihatOrtu --> selesaiKader
+
+    classDef kader fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class dashKader,pilihBalita,inputData,tampilStatus kader;
+    class hitungUsia,hitungZ,klasifikasi,tandai,notifBidan,notifOrtu sistem;
+    class validasiBidan bidan;
+    class lihatOrtu orangtua;
+    class checkInput,status,stunting decision;
+    class simpan,simpanHasil data;
+    class errorInput error;
+    class start,selesaiKader terminal;

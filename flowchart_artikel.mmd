@@ -1,0 +1,50 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Manajemen Artikel Edukasi Kesehatan
+%% Bidan menulis dan mempublikasikan artikel; orang tua membaca artikel di aplikasi
+
+flowchart TD
+    start([Mulai]) --> dashBidan[Bidan: Buka menu edukasi]
+    dashBidan --> menu{Aksi bidan?}
+
+    menu -->|Tulis artikel| formArtikel[/Input judul, kategori topik, target pembaca, isi narasi/]
+    menu -->|Kelola artikel| daftarArtikel[Tampilkan daftar artikel]
+    menu -->|Lihat pratinjau| pratinjau[Tampilkan pratinjau artikel]
+
+    daftarArtikel --> aksiArtikel{Aksi artikel?}
+    aksiArtikel -->|Ubah| formArtikel
+    aksiArtikel -->|Hapus| hapusArtikel[(Sistem: Hapus artikel)]
+    aksiArtikel -->|Lihat| pratinjau
+    hapusArtikel --> daftarArtikel
+
+    formArtikel --> validasi{Judul dan isi terisi?}
+    validasi -->|Tidak| errorArtikel[Tampilkan pesan validasi]
+    errorArtikel --> formArtikel
+
+    validasi -->|Ya| pratinjau
+    pratinjau --> publikasi{Publikasikan artikel?}
+
+    publikasi -->|Tidak| menu
+    publikasi -->|Ya| simpanArtikel[(Sistem: Simpan artikel terverifikasi)]
+    simpanArtikel --> konfirmasiArtikel[Tampilkan pesan artikel terkirim]
+    konfirmasiArtikel --> menu
+
+    simpanArtikel --> tampilOrtu[Orang tua: Artikel muncul di beranda edukasi]
+    tampilOrtu --> bacaOrtu[Orang tua: Baca artikel]
+    bacaOrtu --> selesaiOrtu([Selesai])
+
+    menu -->|Keluar| selesaiOrtu
+
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class dashBidan,menu,formArtikel,daftarArtikel,pratinjau bidan;
+    class simpanArtikel,konfirmasiArtikel data;
+    class tampilOrtu,bacaOrtu orangtua;
+    class validasi,publikasi,aksiArtikel decision;
+    class errorArtikel error;
+    class start,selesaiOrtu terminal;

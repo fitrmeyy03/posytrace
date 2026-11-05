@@ -1,58 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:posytrace_skripsi/features/auth/presentation/pages/login_page.dart';
-import 'package:posytrace_skripsi/features/auth/presentation/pages/register_page.dart';
-import 'package:posytrace_skripsi/features/auth/presentation/pages/forgot_password_page.dart';
-import 'package:posytrace_skripsi/features/parent/presentation/pages/main_shell.dart';
+import 'package:posytrace_skripsi/features/kader/presentation/pages/kader_main_shell.dart';
 import 'package:posytrace_skripsi/features/midwife/presentation/pages/midwife_main_shell.dart';
+import 'package:posytrace_skripsi/features/parent/presentation/pages/main_shell.dart';
 
 Widget _app() => MaterialApp(
       home: const LoginPage(),
       routes: {
         '/home': (_) => const MainShell(),
+        '/kader-home': (_) => const KaderMainShell(),
         '/midwife-home': (_) => const MidwifeMainShell(),
-        '/register': (_) => const RegisterPage(),
-        '/forgot-password': (_) => const ForgotPasswordPage(),
       },
     );
 
-Future<void> _fillValid(WidgetTester tester) async {
-  await tester.enterText(
-      find.byType(TextFormField).at(0), '08123456789');
-  await tester.enterText(
-      find.byType(TextFormField).at(1), 'rahasia123');
+Future<void> _fill(WidgetTester tester) async {
+  await tester.enterText(find.byType(TextField).at(0), '081234567890');
+  await tester.enterText(find.byType(TextField).at(1), 'rahasia123');
   await tester.pump();
+  await tester.tap(find.text('Masuk'));
+  await tester.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('Login ortu masuk ke beranda parent', (tester) async {
+  testWidgets('Validasi nomor HP kosong ditolak', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
-    expect(find.text('Selamat Datang, Ayah & Bunda!'),
-        findsOneWidget);
 
-    await _fillValid(tester);
-    await tester.tap(find.text('Masuk ke Akun PosyTrace'));
+    await tester.tap(find.text('Masuk'));
     await tester.pumpAndSettle();
-    expect(find.text('Hai, Ibu Agnes'), findsOneWidget);
+    expect(find.text('Nomor HP minimal 10 digit'), findsOneWidget);
   });
 
-  testWidgets('Tab Daftar buka halaman registrasi', (tester) async {
+  testWidgets('Login orang tua masuk ke beranda orang tua', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Daftar'));
+
+    await _fill(tester);
+    expect(find.text('Masuk sebagai'), findsOneWidget);
+
+    await tester.tap(find.text('Orang Tua'));
     await tester.pumpAndSettle();
-    expect(find.text('REGISTRASI DIGITAL POSYANDU'), findsOneWidget);
+    expect(find.text('Halo, Ibu Dewi'), findsOneWidget);
+  });
+
+  testWidgets('Login kader masuk ke beranda kader', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
+    await _fill(tester);
+    await tester.tap(find.text('Kader'));
+    await tester.pumpAndSettle();
+    expect(find.text('Halo, Ibu Sari'), findsOneWidget);
   });
 
   testWidgets('Login bidan masuk ke beranda bidan', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
+
+    await _fill(tester);
     await tester.tap(find.text('Bidan'));
-    await tester.pump();
-    await _fillValid(tester);
-    await tester.tap(find.text('Masuk ke Akun PosyTrace'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Bidan Ratna'), findsWidgets);
+    expect(find.text('Halo, Bidan Ratna'), findsOneWidget);
   });
 }

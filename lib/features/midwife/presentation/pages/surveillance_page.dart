@@ -3,13 +3,13 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/data/demo_data.dart';
 import '../../../../core/models/growth_status.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/child_detail_page.dart';
+import '../../../../features/shared/presentation/pages/child_detail_page.dart';
 import '../../../../core/theme/app_layout.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_widgets.dart';
 
-/// Pantauan Balita — semua balita binaan, terurut dari yang paling berisiko.
+/// Pantauan Balita â€” semua balita binaan, terurut dari yang paling berisiko.
 class SurveillancePage extends StatefulWidget {
   const SurveillancePage({super.key});
 
@@ -64,7 +64,7 @@ class _SurveillancePageState extends State<SurveillancePage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: ChildTile(
               name: child.name,
-              meta: '${child.posyandu} · BB/U '
+              meta: '${child.posyandu} Â· BB/U '
                   '${child.zWeightAge.toStringAsFixed(1).replaceAll('.', ',')}',
               status: child.status,
               onTap: () => Navigator.push(

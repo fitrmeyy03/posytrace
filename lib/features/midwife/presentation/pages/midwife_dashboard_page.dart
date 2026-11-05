@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/data/demo_data.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/notifications_page.dart';
+import '../../../../features/shared/presentation/pages/notifications_page.dart';
 import '../../../../core/theme/app_layout.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -11,7 +11,7 @@ import '../../../../core/widgets/app_widgets.dart';
 import 'add_article_page.dart';
 import 'posyandu_list_page.dart';
 
-/// Beranda Bidan — ringkasan lintas posyandu & balita perlu pantauan.
+/// Beranda Bidan â€” ringkasan lintas posyandu & balita perlu pantauan.
 class MidwifeDashboardPage extends StatelessWidget {
   final void Function(int)? onTabChange;
   const MidwifeDashboardPage({super.key, this.onTabChange});
@@ -65,7 +65,7 @@ class MidwifeDashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ChildTile(
                   name: child.name,
-                  meta: '${child.posyandu} · BB/U '
+                  meta: '${child.posyandu} Â· BB/U '
                       '${child.zWeightAge.toStringAsFixed(1).replaceAll('.', ',')}',
                   status: child.status,
                   onTap: () => Navigator.pushNamed(
@@ -115,7 +115,7 @@ class MidwifeDashboardPage extends StatelessWidget {
                             Text(p.name, style: AppText.title),
                             const SizedBox(height: 2),
                             Text(
-                              '${p.children} balita · ${p.cadres} kader',
+                              '${p.children} balita Â· ${p.cadres} kader',
                               style: AppText.caption,
                             ),
                           ],
@@ -148,7 +148,7 @@ class MidwifeDashboardPage extends StatelessWidget {
               Text(DemoData.articles.first.title, style: AppText.title),
               const SizedBox(height: 4),
               Text(
-                'Terbit · ${DemoData.articles.first.date} · dibaca '
+                'Terbit Â· ${DemoData.articles.first.date} Â· dibaca '
                 '${DemoData.articles.first.readers} orang tua',
                 style: AppText.caption,
               ),

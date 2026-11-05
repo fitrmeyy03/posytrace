@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:posytrace_skripsi/core/data/demo_data.dart';
 import 'package:posytrace_skripsi/core/models/user_role.dart';
-import 'package:posytrace_skripsi/core/shared/pages/change_password_page.dart';
-import 'package:posytrace_skripsi/core/shared/pages/child_detail_page.dart';
-import 'package:posytrace_skripsi/core/shared/pages/growth_chart_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/change_password_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/child_detail_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/growth_chart_page.dart';
 import 'package:posytrace_skripsi/features/kader/presentation/pages/kader_schedule_page.dart';
 import 'package:posytrace_skripsi/features/kader/presentation/pages/parent_detail_page.dart';
 import 'package:posytrace_skripsi/features/kader/presentation/pages/parent_form_page.dart';
@@ -18,7 +18,7 @@ import 'package:posytrace_skripsi/features/parent/presentation/pages/articles_pa
 import 'package:posytrace_skripsi/features/parent/presentation/pages/measurement_history_page.dart';
 import 'package:posytrace_skripsi/features/parent/presentation/pages/schedule_page.dart';
 
-/// Smoke test semua layar pada ukuran ponsel — memastikan tidak ada overflow.
+/// Smoke test semua layar pada ukuran ponsel â€” memastikan tidak ada overflow.
 void main() {
   Future<void> pumpPhone(WidgetTester tester, Widget page) async {
     tester.view.physicalSize = const Size(390 * 3, 844 * 3);

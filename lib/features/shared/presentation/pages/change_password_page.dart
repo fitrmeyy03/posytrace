@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
-import '../../theme/app_layout.dart';
-import '../../theme/app_spacing.dart';
-import '../../theme/app_theme.dart';
-import '../../widgets/app_widgets.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/app_layout.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_widgets.dart';
 
 /// Ganti Kata Sandi — wajib saat pertama masuk dengan kata sandi sementara.
 class ChangePasswordPage extends StatefulWidget {

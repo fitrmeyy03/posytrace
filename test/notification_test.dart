@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:posytrace_skripsi/core/shared/pages/notifications_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/notifications_page.dart';
 
 void main() {
   testWidgets('Notifikasi: daftar baru & sebelumnya', (tester) async {

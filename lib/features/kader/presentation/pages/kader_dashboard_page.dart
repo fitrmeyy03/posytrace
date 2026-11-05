@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/data/demo_data.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/notifications_page.dart';
+import '../../../../features/shared/presentation/pages/notifications_page.dart';
 import '../../../../core/theme/app_layout.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_mascot.dart';
 import '../../../../core/widgets/app_widgets.dart';
 import 'record_visit_page.dart';
 
-/// Beranda Kader — jadwal hari ini, ringkasan, balita perlu perhatian.
+/// Beranda Kader â€” jadwal hari ini, ringkasan, balita perlu perhatian.
 class KaderDashboardPage extends StatelessWidget {
   final void Function(int)? onTabChange;
 
@@ -39,7 +39,7 @@ class KaderDashboardPage extends StatelessWidget {
         HeroCard(
           label: 'Posyandu hari ini',
           title: DemoData.today,
-          subtitle: '${DemoData.posyanduAddress} · 08.00–11.00',
+          subtitle: '${DemoData.posyanduAddress} Â· 08.00â€“11.00',
           action: HeroOutlinedButton(
             'Mulai Pencatatan',
             onPressed: () => _startVisit(context),
@@ -65,7 +65,7 @@ class KaderDashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ChildTile(
                   name: child.name,
-                  meta: '${child.ageMonths} bulan · BB/U '
+                  meta: '${child.ageMonths} bulan Â· BB/U '
                       '${child.zWeightAge.toStringAsFixed(1).replaceAll('.', ',')}',
                   status: child.status,
                   onTap: () => _openChild(context, child.name),
@@ -80,7 +80,7 @@ class KaderDashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ChildTile(
                   name: child.name,
-                  meta: '${child.gender} · ${child.ageMonths} bulan',
+                  meta: '${child.gender} Â· ${child.ageMonths} bulan',
                   status: child.status,
                   onTap: () => _openChild(context, child.name),
                 ),

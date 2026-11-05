@@ -3,8 +3,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/data/demo_data.dart';
 import '../../../../core/models/growth_status.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/growth_chart_page.dart';
-import '../../../../core/shared/pages/notifications_page.dart';
+import '../../../../features/shared/presentation/pages/growth_chart_page.dart';
+import '../../../../features/shared/presentation/pages/notifications_page.dart';
 import '../../../../core/theme/app_layout.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -12,7 +12,7 @@ import '../../../../core/widgets/app_mascot.dart';
 import '../../../../core/widgets/app_widgets.dart';
 import 'measurement_history_page.dart';
 
-/// Beranda Orang Tua — kartu anak digeser seperti kartu bank.
+/// Beranda Orang Tua â€” kartu anak digeser seperti kartu bank.
 class DashboardPage extends StatefulWidget {
   final void Function(int)? onTabChange;
   const DashboardPage({super.key, this.onTabChange});
@@ -82,7 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             const Spacer(),
             Text(
-              '${children.length} ANAK  ·  GESER',
+              '${children.length} ANAK  Â·  GESER',
               style: AppText.label.copyWith(
                 fontSize: 10,
                 color: AppColors.textMuted,
@@ -117,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         const SizedBox(height: AppSpacing.gapSm),
         Text(
-          '‹   Geser kartu untuk melihat anak berikutnya   ›',
+          'â€¹   Geser kartu untuk melihat anak berikutnya   â€º',
           textAlign: TextAlign.center,
           style: AppText.caption.copyWith(fontSize: 11),
         ),
@@ -143,7 +143,7 @@ class _DashboardPageState extends State<DashboardPage> {
         const SizedBox(height: AppSpacing.gapMd),
         SectionTitle(
           'Kunjungan terakhir',
-          actionLabel: 'Lihat riwayat  ›',
+          actionLabel: 'Lihat riwayat  â€º',
           onAction: () => _openHistory(child.name),
         ),
         const SizedBox(height: AppSpacing.gapXs),
@@ -166,7 +166,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${child.lastVisit}  ·  ${child.ageLabel}',
+                      '${child.lastVisit}  Â·  ${child.ageLabel}',
                       style: AppText.caption.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -174,7 +174,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'BB ${_num(child.weight)} kg   ·   '
+                      'BB ${_num(child.weight)} kg   Â·   '
                       'TB ${_num(child.height)} cm',
                       style: AppText.caption.copyWith(fontSize: 11),
                     ),
@@ -183,7 +183,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               if (child.weightGain > 0)
                 Text(
-                  '↑ ${_num(child.weightGain)} kg',
+                  'â†‘ ${_num(child.weightGain)} kg',
                   style: AppText.caption.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.statusNormal,
@@ -199,7 +199,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
 String _num(double value) => value.toStringAsFixed(1).replaceAll('.', ',');
 
-/// Kartu anak — header oranye dengan maskot, diikuti ringkasan BB/TB.
+/// Kartu anak â€” header oranye dengan maskot, diikuti ringkasan BB/TB.
 class _ChildCard extends StatelessWidget {
   final ChildRecord child;
   final VoidCallback onChart;
@@ -243,7 +243,7 @@ class _ChildCard extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              '${child.gender}  ·  ${child.ageLabel}',
+                              '${child.gender}  Â·  ${child.ageLabel}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppText.caption.copyWith(
@@ -410,7 +410,7 @@ class _ChartButton extends StatelessWidget {
           height: 38,
           child: Center(
             child: Text(
-              'Lihat grafik pertumbuhan  ›',
+              'Lihat grafik pertumbuhan  â€º',
               style: AppText.button.copyWith(fontSize: 12),
             ),
           ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/profile_page.dart';
+import '../../../../features/shared/presentation/pages/profile_page.dart';
 import '../../../../core/widgets/app_widgets.dart';
 import 'articles_page.dart';
 import 'dashboard_page.dart';
 import 'schedule_page.dart';
 
-/// Shell Orang Tua — 4 menu bawah: Beranda, Jadwal, Artikel, Profil.
+/// Shell Orang Tua â€” 4 menu bawah: Beranda, Jadwal, Artikel, Profil.
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 

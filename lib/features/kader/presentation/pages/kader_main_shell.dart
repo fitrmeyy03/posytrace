@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/profile_page.dart';
+import '../../../../features/shared/presentation/pages/profile_page.dart';
 import '../../../../core/widgets/app_widgets.dart';
 import 'children_page.dart';
 import 'kader_dashboard_page.dart';
 import 'kader_schedule_page.dart';
 
-/// Shell Kader — 4 menu bawah: Beranda, Balita, Jadwal, Profil.
+/// Shell Kader â€” 4 menu bawah: Beranda, Balita, Jadwal, Profil.
 class KaderMainShell extends StatefulWidget {
   const KaderMainShell({super.key});
 

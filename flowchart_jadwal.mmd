@@ -1,0 +1,59 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Manajemen Jadwal dan Pengingat FCM
+%% Bidan mengelola jadwal Posyandu; sistem kirim notifikasi perubahan dan pengingat H-3/H-1
+
+flowchart TD
+    start([Mulai]) --> dashBidan[Bidan: Buka menu jadwal]
+    dashBidan --> menu{Aksi bidan?}
+
+    menu -->|Tambah jadwal| formTambah[/Input tanggal, waktu, lokasi, jenis kegiatan/]
+    menu -->|Ubah jadwal| pilihJadwal[Pilih jadwal yang akan diubah]
+    menu -->|Hapus jadwal| pilihHapus[Pilih jadwal yang akan dihapus]
+    menu -->|Lihat jadwal| daftarJadwal[Tampilkan daftar jadwal Posyandu]
+
+    pilihJadwal --> formUbah[/Ubah data jadwal/]
+    pilihHapus --> konfirmasi{Konfirmasi hapus?}
+    konfirmasi -->|Tidak| menu
+    konfirmasi -->|Ya| hapusJadwal[(Sistem: Hapus jadwal)]
+
+    formTambah --> validasi{Data jadwal lengkap?}
+    formUbah --> validasi
+
+    validasi -->|Tidak| errorJadwal[Tampilkan pesan validasi]
+    errorJadwal --> menu
+
+    validasi -->|Ya| simpanJadwal[(Sistem: Simpan jadwal Posyandu)]
+    simpanJadwal --> perluNotif{Perlu kirim notifikasi?}
+
+    perluNotif -->|Tidak| menu
+    perluNotif -->|Ya| kirimNotif[Sistem: Kirim notifikasi jadwal baru atau perubahan]
+    kirimNotif --> simpanNotif[(Sistem: Simpan notifikasi)]
+    simpanNotif --> notifOrtu[Orang tua: Terima notifikasi jadwal]
+
+    simpanNotif --> scheduler[Sistem: Penjadwal pengingat otomatis]
+    scheduler --> h3[Sistem: Kirim pengingat H-3]
+    h3 --> h1[Sistem: Kirim pengingat H-1]
+    h1 --> notifOrtu
+
+    notifOrtu --> detailJadwal[Orang tua: Buka detail jadwal]
+    detailJadwal --> daftarJadwal
+
+    hapusJadwal --> menu
+    daftarJadwal --> menu
+    menu -->|Keluar| done([Selesai])
+
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class dashBidan,menu,formTambah,pilihJadwal,formUbah,pilihHapus,daftarJadwal bidan;
+    class simpanJadwal,notifOrtu,simpanNotif,scheduler,h3,h1 data;
+    class notifOrtu,detailJadwal orangtua;
+    class konfirmasi,validasi,perluNotif decision;
+    class hapusJadwal,simpanJadwal,simpanNotif data;
+    class errorJadwal error;
+    class start,done terminal;

@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/data/demo_data.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_mascot.dart';
+import '../../../../core/widgets/app_widgets.dart';
+import '../../../../core/widgets/brand_logo.dart';
 
-class _C {
-  static const bg = Color(0xFFFBF9F6);
-  static const primary = Color(0xFF954A00);
-  static const primaryContainer = Color(0xFFE8863A);
-  static const secondaryContainer = Color(0xFFFEA45F);
-  static const onSurface = Color(0xFF1B1C1A);
-  static const onSurfaceVariant = Color(0xFF554338);
-  static const outline = Color(0xFF887366);
-  static const outlineVariant = Color(0xFFDBC2B3);
-  static const surfaceLow = Color(0xFFF5F3F0);
-  static const surfaceLowest = Colors.white;
-}
-
+/// Login — satu layar masuk untuk kader, bidan, dan orang tua.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -22,489 +15,232 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _id = TextEditingController();
-  final _pw = TextEditingController();
+  final _phone = TextEditingController();
+  final _password = TextEditingController();
   bool _obscure = true;
-  bool _remember = true;
-  int _role = 0; // 0 ortu, 1 kader, 2 bidan
+  String? _phoneError;
+  String? _passwordError;
 
   @override
   void dispose() {
-    _id.dispose();
-    _pw.dispose();
+    _phone.dispose();
+    _password.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-    if (_role == 2) {
-      Navigator.pushReplacementNamed(context, '/midwife-home');
-    } else {
-      Navigator.pushReplacementNamed(context, '/home');
-    }
+    final phone = _phone.text.replaceAll(RegExp(r'\D'), '');
+    setState(() {
+      _phoneError = phone.length < 10 ? 'Nomor HP minimal 10 digit' : null;
+      _passwordError =
+          _password.text.length < 6 ? 'Kata sandi minimal 6 karakter' : null;
+    });
+    if (_phoneError != null || _passwordError != null) return;
+    FocusScope.of(context).unfocus();
+    _chooseRole();
+  }
+
+  /// Tanpa backend, peran dipilih setelah login agar semua layar bisa dibuka.
+  Future<void> _chooseRole() async {
+    final role = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text('Masuk sebagai', style: AppText.h2),
+            const SizedBox(height: 4),
+            Text(
+              'Pilih peran akun untuk melanjutkan.',
+              style: AppText.caption,
+            ),
+            const SizedBox(height: 12),
+            _RoleOption(
+              title: 'Kader',
+              subtitle: 'Pencatatan kunjungan & data balita',
+              icon: Icons.assignment_ind_outlined,
+              onTap: () => Navigator.pop(context, 'kader'),
+            ),
+            const SizedBox(height: 8),
+            _RoleOption(
+              title: 'Bidan',
+              subtitle: 'Pemantauan lintas posyandu & artikel',
+              icon: Icons.medical_services_outlined,
+              onTap: () => Navigator.pop(context, 'bidan'),
+            ),
+            const SizedBox(height: 8),
+            _RoleOption(
+              title: 'Orang Tua',
+              subtitle: 'Pantau grafik anak & baca edukasi',
+              icon: Icons.family_restroom_rounded,
+              onTap: () => Navigator.pop(context, 'orangtua'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || role == null) return;
+    final route = switch (role) {
+      'kader' => '/kader-home',
+      'bidan' => '/midwife-home',
+      _ => '/home',
+    };
+    Navigator.pushReplacementNamed(context, route);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _C.bg,
-      body: Stack(
-        children: [
-          Positioned(
-            top: -96, left: -80,
-            child: Container(
-              width: 256, height: 256,
-              decoration: BoxDecoration(
-                color: _C.primaryContainer
-                    .withValues(alpha: 0.10),
-                shape: BoxShape.circle,
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.border),
+                  boxShadow: [AppColors.cardShadow],
+                ),
+                child: const AppMascot(size: 88),
               ),
             ),
-          ),
-          Positioned(
-            top: 320, right: -96,
-            child: Container(
-              width: 288, height: 288,
-              decoration: BoxDecoration(
-                color: _C.secondaryContainer
-                    .withValues(alpha: 0.15),
-                shape: BoxShape.circle,
+            const SizedBox(height: 14),
+            const Center(child: BrandWordmark(fontSize: 26)),
+            const SizedBox(height: 6),
+            Center(
+              child: Text(
+                'Pemantauan tumbuh kembang balita',
+                style: AppText.caption,
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                  20, 24, 20, 28),
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                children: [
-                  // Brand header
-                  Row(
-                    children: [
-                      Container(
-                        width: 48, height: 48,
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: _C.surfaceLowest,
-                          borderRadius:
-                              BorderRadius.circular(16),
-                          border: Border.all(
-                              color: _C.outlineVariant
-                                  .withValues(
-                                      alpha: 0.3)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: const Color(
-                                        0xFFB89678)
-                                    .withValues(
-                                        alpha: 0.12),
-                                blurRadius: 24,
-                                offset:
-                                    const Offset(0, 8)),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(12),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            fit: BoxFit.contain,
-                            errorBuilder:
-                                (ctx, err, stack) =>
-                                    const Icon(
-                              Icons.child_care_rounded,
-                              color: _C.primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: GoogleFonts
-                                  .plusJakartaSans(
-                                      fontSize: 18,
-                                      fontWeight:
-                                          FontWeight.w700,
-                                      letterSpacing: -0.3,
-                                      color:
-                                          _C.onSurface),
-                              children: const [
-                                TextSpan(text: 'Posy'),
-                                TextSpan(
-                                    text: 'Trace',
-                                    style: TextStyle(
-                                        color: _C
-                                            .primaryContainer)),
-                              ],
-                            ),
-                          ),
-                          Text('KMS & POSYANDU DIGITAL',
-                              style: GoogleFonts
-                                  .plusJakartaSans(
-                                      fontSize: 10,
-                                      letterSpacing: 1.0,
-                                      color: _C.outline)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Greeting
-                  Text('Selamat Datang, Ayah & Bunda!',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.4,
-                          height: 1.3)),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Masuk untuk memantau rekam medis balita, jadwal imunisasi, dan KMS digital.',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: _C.onSurfaceVariant),
-                  ),
-                  const SizedBox(height: 18),
-                  // Segmented Masuk / Daftar
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: _C.surfaceLow,
-                      borderRadius:
-                          BorderRadius.circular(28),
-                      border: Border.all(
-                          color: _C.outlineVariant
-                              .withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        _seg('Masuk', true, null),
-                        _seg('Daftar', false, () {
-                          Navigator.pushNamed(
-                              context, '/register');
-                        }),
-                      ],
+            const SizedBox(height: 2),
+            Center(
+              child: Text(
+                DemoData.posyanduName,
+                style: AppText.caption.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.deepOrange,
+                ),
+              ),
+            ),
+            const SizedBox(height: 28),
+            AppTextField(
+              label: 'Nomor HP',
+              hint: '0812 3456 7890',
+              icon: Icons.phone_outlined,
+              controller: _phone,
+              keyboardType: TextInputType.phone,
+              errorText: _phoneError,
+            ),
+            const SizedBox(height: 14),
+            AppTextField(
+              label: 'Kata Sandi',
+              hint: '••••••••',
+              icon: Icons.lock_outline_rounded,
+              controller: _password,
+              obscure: _obscure,
+              errorText: _passwordError,
+              suffix: IconButton(
+                onPressed: () => setState(() => _obscure = !_obscure),
+                icon: Icon(
+                  _obscure
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  size: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            AppButton('Masuk', expanded: true, onPressed: _submit),
+            const SizedBox(height: 14),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: AppText.caption,
+                children: const [
+                  TextSpan(text: 'Lupa kata sandi? Minta reset ke '),
+                  TextSpan(
+                    text: 'kader posyandu',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.deepOrange,
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  // Role (pertahankan routing peran)
-                  _roles(),
-                  const SizedBox(height: 16),
-                  // Form
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        _label('WhatsApp / No. HP / Email'),
-                        TextFormField(
-                          controller: _id,
-                          validator: (v) =>
-                              (v == null || v.isEmpty)
-                                  ? 'Wajib diisi'
-                                  : null,
-                          decoration: _dec(
-                            hint:
-                                'Contoh: 08123456789 atau bunda@email.com',
-                            icon: Icons.call,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        _label('Kata Sandi'),
-                        TextFormField(
-                          controller: _pw,
-                          obscureText: _obscure,
-                          validator: (v) {
-                            if (v == null ||
-                                v.isEmpty) {
-                              return 'Kata sandi wajib diisi';
-                            }
-                            if (v.length < 6) {
-                              return 'Minimal 6 karakter';
-                            }
-                            return null;
-                          },
-                          decoration: _dec(
-                            hint:
-                                'Masukkan kata sandi akun',
-                            icon: Icons.lock,
-                            suffix: IconButton(
-                              onPressed: () =>
-                                  setState(() =>
-                                      _obscure =
-                                          !_obscure),
-                              icon: Icon(
-                                  _obscure
-                                      ? Icons.visibility
-                                      : Icons
-                                          .visibility_off,
-                                  size: 20,
-                                  color: _C.outline),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment
-                                  .spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () => setState(() =>
-                                  _remember =
-                                      !_remember),
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    value: _remember,
-                                    activeColor: _C
-                                        .primaryContainer,
-                                    onChanged: (v) =>
-                                        setState(() =>
-                                            _remember =
-                                                v ??
-                                                    false),
-                                  ),
-                                  Text('Ingat Saya',
-                                      style: GoogleFonts
-                                          .plusJakartaSans(
-                                              fontSize: 12,
-                                              fontWeight:
-                                                  FontWeight
-                                                      .w500)),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () =>
-                                  Navigator.pushNamed(
-                                      context,
-                                      '/forgot-password'),
-                              child: Text(
-                                  'Lupa Kata Sandi?',
-                                  style: GoogleFonts
-                                      .plusJakartaSans(
-                                          fontSize: 12,
-                                          fontWeight:
-                                              FontWeight
-                                                  .w600,
-                                          color: _C
-                                              .primary)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: _submit,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  _C.primaryContainer,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius
-                                          .circular(28)),
-                              elevation: 6,
-                              shadowColor: _C
-                                  .primaryContainer
-                                  .withValues(
-                                      alpha: 0.4),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment
-                                      .center,
-                              children: [
-                                Text(
-                                    'Masuk ke Akun PosyTrace',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight:
-                                            FontWeight
-                                                .w700,
-                                        color:
-                                            Colors.white)),
-                                SizedBox(width: 8),
-                                Icon(
-                                    Icons.arrow_forward,
-                                    size: 18,
-                                    color: Colors.white),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  TextSpan(text: ' Anda.'),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _seg(
-      String t, bool active, VoidCallback? onTap) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding:
-              const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: active
-                ? _C.surfaceLowest
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                        color: const Color(0xFFB89678)
-                            .withValues(alpha: 0.12),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4))
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
-          child: Text(t,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: active
-                      ? FontWeight.w700
-                      : FontWeight.w500,
-                  color: active
-                      ? _C.primary
-                      : _C.outline)),
+            const SizedBox(height: 18),
+            const InfoNote(
+              'Akun dibuatkan oleh kader atau bidan posyandu — tidak ada pendaftaran mandiri.',
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _roles() {
-    final defs = [
-      {'icon': Icons.favorite, 'label': 'Orang Tua'},
-      {'icon': Icons.assignment_turned_in, 'label': 'Kader'},
-      {'icon': Icons.medical_services, 'label': 'Bidan'},
-    ];
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: _C.surfaceLow,
-        borderRadius: BorderRadius.circular(24),
-      ),
+class _RoleOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _RoleOption({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(14),
       child: Row(
-        children: List.generate(3, (i) {
-          final active = _role == i;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _role = i),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 9),
-                decoration: BoxDecoration(
-                  color: active
-                      ? _C.surfaceLowest
-                      : Colors.transparent,
-                  borderRadius:
-                      BorderRadius.circular(20),
-                  boxShadow: active
-                      ? [
-                          BoxShadow(
-                              color: const Color(
-                                      0xFFB89678)
-                                  .withValues(
-                                      alpha: 0.12),
-                              blurRadius: 8,
-                              offset:
-                                  const Offset(0, 2))
-                        ]
-                      : null,
-                ),
-                child: Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
-                  children: [
-                    Icon(defs[i]['icon'] as IconData,
-                        size: 16,
-                        color: active
-                            ? _C.primary
-                            : _C.outline),
-                    const SizedBox(width: 4),
-                    Text(defs[i]['label'] as String,
-                        style: GoogleFonts
-                            .plusJakartaSans(
-                                fontSize: 11,
-                                fontWeight:
-                                    FontWeight.w700,
-                                color: active
-                                    ? _C.primary
-                                    : _C.outline)),
-                  ],
-                ),
-              ),
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.tint,
+              borderRadius: BorderRadius.circular(12),
             ),
-          );
-        }),
+            child: Icon(icon, size: 20, color: AppColors.deepOrange),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppText.title),
+                Text(subtitle, style: AppText.caption),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+        ],
       ),
-    );
-  }
-
-  Widget _label(String t) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Text(t,
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: _C.onSurfaceVariant)),
-      ),
-    );
-  }
-
-  InputDecoration _dec(
-      {required String hint,
-      required IconData icon,
-      Widget? suffix}) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          color: _C.outline.withValues(alpha: 0.6)),
-      prefixIcon:
-          Icon(icon, size: 20, color: _C.outline),
-      suffixIcon: suffix,
-      filled: true,
-      fillColor: _C.surfaceLowest,
-      border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          borderSide: BorderSide(
-              color: _C.outlineVariant
-                  .withValues(alpha: 0.5))),
-      enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          borderSide: BorderSide(
-              color: _C.outlineVariant
-                  .withValues(alpha: 0.5))),
-      focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(28),
-          borderSide: const BorderSide(
-              color: _C.primaryContainer, width: 2)),
-      contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 14),
     );
   }
 }

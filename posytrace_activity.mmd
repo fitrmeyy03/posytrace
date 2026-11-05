@@ -1,0 +1,59 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Activity Diagram PosyTrace - Proses Pemeriksaan dan Deteksi Stunting
+%% Alur utama: Kader -> Sistem -> Bidan -> Orang Tua
+%% Z-Score hanya BB/U, TB/U, BB/TB (tanpa IMT/U), klasifikasi Permenkes No. 2 Tahun 2020
+
+flowchart TD
+    start([Mulai]) --> login[/Kader: Input email dan password/]
+    login --> verify[Sistem: Verifikasi kredensial melalui Firebase Authentication]
+    verify --> valid{Kredensial valid?}
+
+    valid -->|Tidak| error[Tampilkan pesan kesalahan]
+    error --> login
+
+    valid -->|Ya| role[Sistem: Ambil data pengguna dan peran dari Cloud Firestore]
+    role --> isKader{Peran pengguna adalah kader?}
+
+    isKader -->|Tidak| denied[Tampilkan pesan akses ditolak]
+    denied --> done([Selesai])
+
+    isKader -->|Ya| selectChild[Kader: Pilih data balita]
+    selectChild --> inputExam[/Kader: Input tanggal periksa, BB, TB, LK, LILA, imunisasi, dan vitamin/]
+    inputExam --> calcAge[Sistem: Hitung usia balita dalam bulan]
+    calcAge --> calcZ[Sistem: Hitung Z-Score BB/U, TB/U, dan BB/TB menggunakan LMS WHO]
+    calcZ --> classify[Sistem: Klasifikasi status gizi sesuai Permenkes No. 2 Tahun 2020]
+    classify --> saveExam[(Sistem: Simpan hasil pemeriksaan)]
+    saveExam --> showResult[Kader: Lihat status gizi dan kurva pertumbuhan]
+    showResult --> stunting{Z-Score TB/U kurang dari -2 SD?}
+
+    stunting -->|Tidak| done
+
+    stunting -->|Ya| mark[Sistem: Tandai data sebagai prioritas stunting]
+    mark --> alert[Sistem: Kirim peringatan stunting ke bidan dan orang tua]
+    alert --> notifyMidwife[Bidan: Terima notifikasi prioritas stunting]
+    alert --> notifyParent[Orang Tua: Terima notifikasi stunting]
+
+    notifyMidwife --> validate[Bidan: Periksa dan validasi data pemeriksaan]
+    validate --> recommendation[/Bidan: Input rekomendasi dan catatan gizi/]
+    recommendation --> saveValidation[(Sistem: Simpan status validasi dan rekomendasi)]
+    saveValidation --> parentView[Orang Tua: Lihat hasil pemeriksaan dan rekomendasi]
+    notifyParent --> parentView
+    parentView --> done
+
+    classDef kader fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class login,selectChild,inputExam,showResult kader;
+    class verify,role,calcAge,calcZ,classify,mark,alert sistem;
+    class notifyMidwife,validate,recommendation bidan;
+    class notifyParent,parentView orangtua;
+    class valid,isKader,stunting decision;
+    class saveExam,saveValidation data;
+    class error,denied error;
+    class start,done terminal;

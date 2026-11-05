@@ -1,0 +1,54 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Flowchart Fitur PosyTrace - Autentikasi dan Manajemen Sesi
+%% Mencakup: splash, cek sesi, onboarding, login, lupa kata sandi, aktivasi akun, routing peran
+
+flowchart TD
+    start([Mulai]) --> splash[Tampilkan splash screen]
+    splash --> checkSession{Sesi Firebase Auth masih aktif?}
+
+    checkSession -->|Ya| ambilPeran[Sistem: Ambil peran pengguna dari Cloud Firestore]
+    checkSession -->|Tidak| onboarding[Tampilkan halaman onboarding]
+    onboarding --> login[Tampilkan halaman login]
+
+    login --> action{Aksi pengguna?}
+    action -->|Login| inputLogin[/Input email dan password/]
+    action -->|Lupa kata sandi| forgot[/Input email terdaftar/]
+    action -->|Aktivasi akun| openLink[Buka tautan aktivasi dari email]
+
+    forgot --> sendReset[Sistem: Kirim tautan reset melalui Firebase Authentication]
+    sendReset --> infoReset[Tampilkan konfirmasi pengiriman email]
+    infoReset --> login
+
+    openLink --> setPassword[/Buat kata sandi baru/]
+    setPassword --> activate[Sistem: Aktifkan akun sesuai peran yang ditetapkan]
+    activate --> infoActivate[Tampilkan pesan akun aktif]
+    infoActivate --> login
+
+    inputLogin --> verify[Sistem: Verifikasi kredensial via Firebase Authentication]
+    verify --> valid{Kredensial valid?}
+
+    valid -->|Tidak| error[Tampilkan pesan kesalahan]
+    error --> login
+
+    valid -->|Ya| token[Sistem: Simpan token FCM perangkat]
+    token --> ambilPeran
+
+    ambilPeran --> role{Peran pengguna?}
+    role -->|Bidan| dashBidan[Menu utama bidan]
+    role -->|Kader| dashKader[Menu utama kader]
+    role -->|Orang tua| dashOrtu[Menu utama orang tua]
+
+    dashBidan --> done([Selesai])
+    dashKader --> done
+    dashOrtu --> done
+
+    classDef pengguna fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class splash,onboarding,login,inputLogin,forgot,openLink,setPassword,infoReset,infoActivate,error,dashBidan,dashKader,dashOrtu pengguna;
+    class checkSession,verify,sendReset,activate,token,ambilPeran sistem;
+    class action,valid,role decision;
+    class start,done terminal;

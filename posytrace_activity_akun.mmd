@@ -1,0 +1,71 @@
+%%{init: {"themeCSS": ".edgePath, .flowchart-link, path.path { stroke-linecap: round !important; stroke-linejoin: round !important; }"}}%%
+%% Activity Diagram PosyTrace - Pengelolaan Akun dan Aktivasi
+%% Alur: Bidan membuat kader -> Kader membuat orang tua -> Orang tua aktivasi email
+%% Tidak ada pemilihan peran publik; peran ditetapkan oleh pembuat akun
+
+flowchart TD
+    start([Mulai]) --> seed[Sistem: Seed akun bidan pertama]
+    seed --> open[Buka aplikasi PosyTrace]
+    open --> action{Aksi pengguna?}
+
+    action -->|Login| login[/Input email dan password/]
+    action -->|Lupa kata sandi| forgot[/Input email terdaftar/]
+    action -->|Aktivasi akun| activation[/Buka tautan aktivasi dari email/]
+
+    forgot --> sendReset[Sistem: Kirim tautan reset kata sandi melalui Firebase Authentication]
+    sendReset --> open
+
+    activation --> setPassword[/Buat kata sandi baru/]
+    setPassword --> activate[Sistem: Aktifkan akun dengan peran yang sudah ditetapkan]
+    activate --> open
+
+    login --> verify[Sistem: Verifikasi kredensial]
+    verify --> valid{Kredensial valid?}
+    valid -->|Tidak| error[Tampilkan pesan kesalahan]
+    error --> login
+
+    valid -->|Ya| role[Sistem: Ambil data pengguna dan peran dari Cloud Firestore]
+    role --> roleDecision{Peran pengguna?}
+
+    roleDecision -->|Bidan| bidanMenu{Aksi bidan?}
+    roleDecision -->|Kader| kaderMenu{Aksi kader?}
+    roleDecision -->|Orang tua| parentMenu{Aksi orang tua?}
+
+    bidanMenu -->|Buat akun kader| inputKader[/Input nama dan email kader/]
+    inputKader --> createKader[Sistem: Buat akun kader dengan peran kader]
+    createKader --> saveKader[(Sistem: Simpan data kader)]
+    saveKader --> sendKaderMail[Sistem: Kirim email aktivasi kader]
+    sendKaderMail --> bidanMenu
+    bidanMenu -->|Keluar| done([Selesai])
+
+    kaderMenu -->|Buat akun orang tua| inputParent[/Input nama orang tua, email, dan data balita/]
+    inputParent --> exists{Akun orang tua sudah terdaftar?}
+    exists -->|Belum| createParent[Sistem: Buat akun orang tua dengan peran orang_tua]
+    exists -->|Sudah| linkChild[Sistem: Tautkan balita ke akun orang tua]
+    createParent --> saveParent[(Sistem: Simpan akun dan data balita)]
+    linkChild --> saveParent
+    saveParent --> sendParentMail[Sistem: Kirim email aktivasi orang tua]
+    sendParentMail --> kaderMenu
+    kaderMenu -->|Keluar| done
+
+    parentMenu -->|Lihat dashboard| parentDash[Tampilkan dashboard orang tua]
+    parentDash --> parentMenu
+    parentMenu -->|Keluar| done
+
+    classDef bidan fill:#E8F5E9,stroke:#2E7D32,stroke-width:1.5px,color:#1B5E20;
+    classDef kader fill:#E3F2FD,stroke:#1565C0,stroke-width:1.5px,color:#0D47A1;
+    classDef orangtua fill:#FFF3E0,stroke:#EF6C00,stroke-width:1.5px,color:#E65100;
+    classDef sistem fill:#F3E5F5,stroke:#6A1B9A,stroke-width:1.5px,color:#4A148C;
+    classDef decision fill:#FFF8E1,stroke:#F9A825,stroke-width:1.5px,color:#F57F17;
+    classDef data fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#263238;
+    classDef error fill:#FFEBEE,stroke:#C62828,stroke-width:1.5px,color:#B71C1C;
+    classDef terminal fill:#263238,stroke:#263238,stroke-width:1.5px,color:#FFFFFF;
+
+    class bidanMenu,inputKader bidan;
+    class kaderMenu,inputParent,linkChild kader;
+    class parentMenu,parentDash,activation,setPassword orangtua;
+    class seed,sendReset,activate,verify,role,createKader,sendKaderMail,createParent,sendParentMail sistem;
+    class action,valid,roleDecision,exists decision;
+    class saveKader,saveParent data;
+    class error error;
+    class start,done terminal;

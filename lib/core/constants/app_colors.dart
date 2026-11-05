@@ -1,59 +1,65 @@
 import 'package:flutter/material.dart';
 
+/// Palet PosyTrace — diambil persis dari spesifikasi desain "Oranye Posyandu".
+///
+/// Aturan pakai:
+/// - [primary]      (#F97316) hanya untuk ikon aktif, aksen, grafik, FAB.
+/// - [primaryDark]  (#EA580C) untuk tombol utama berteks putih & teks oranye.
+///   Jangan taruh teks putih di atas [primary] — kontrasnya cuma ±2,8:1.
+/// - [deepOrange]   (#C2410C) untuk judul aksen, badge peran, teks oranye kecil.
+/// - [softOrange]   (#FB923C) untuk ilustrasi & highlight.
+/// - [tint]         (#FFEDD5) untuk latar chip, avatar, kartu lembut.
+/// - [background]   (#FFF7ED) latar layar, [surface] (#FFFFFF) kartu & form.
 class AppColors {
   AppColors._();
 
-  // Primary (#FF6B35 Sharp Orange)
-  static const Color primary = Color(0xFFFF6B35);
+  // ---- Brand ----
+  static const Color primary = Color(0xFFF97316);
+  static const Color primaryDark = Color(0xFFEA580C);
+  static const Color deepOrange = Color(0xFFC94F0B);
+  static const Color softOrange = Color(0xFFFB923C);
+  static const Color tint = Color(0xFFFFF2E5);
   static const Color onPrimary = Color(0xFFFFFFFF);
-  static const Color primaryContainer = Color(0xFFFFE8DD);
-  static const Color onPrimaryContainer = Color(0xFF2D1600);
 
-  // Secondary (Coral Orange)
-  static const Color secondary = Color(0xFFFF8C42);
-  static const Color onSecondary = Color(0xFFFFFFFF);
-  static const Color secondaryContainer = Color(0xFFFFF0E5);
-  static const Color onSecondaryContainer = Color(0xFF2E1500);
+  // ---- Latar & teks ----
+  static const Color background = Color(0xFFFFFEFC);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color subtle = Color(0xFFFFF8F1);
+  static const Color segmentTrack = Color(0xFFF8F2EA);
+  static const Color textPrimary = Color(0xFF28231F);
+  static const Color textSecondary = Color(0xFF776C61);
+  static const Color textMuted = Color(0xFF8A7D71);
+  static const Color border = Color(0xFFEEE5DB);
+  static const Color divider = Color(0xFFF0E7DD);
 
-  // Tertiary (Golden)
-  static const Color tertiary = Color(0xFFFFD23F);
-  static const Color onTertiary = Color(0xFF2E1500);
-  static const Color tertiaryContainer = Color(0xFFFFF8E1);
-  static const Color onTertiaryContainer = Color(0xFF2E1500);
+  // ---- Status gizi (Z-Score, Permenkes No. 2/2020) ----
+  // Selalu dipakai bersama label teks, jangan warna saja.
+  static const Color statusSevere = Color(0xFFDC2626); // Z < -3 SD
+  static const Color statusSevereBg = Color(0xFFFEE2E2);
+  static const Color statusUnder = Color(0xFFD97706); // -3 s.d. < -2 SD
+  static const Color statusUnderBg = Color(0xFFFEF3C7);
+  static const Color statusNormal = Color(0xFF247347); // -2 s.d. +1/+2 SD
+  static const Color statusNormalBg = Color(0xFFE9F6EC);
+  static const Color statusOver = Color(0xFF2563EB); // di atas ambang atas
+  static const Color statusOverBg = Color(0xFFDBEAFE);
 
-  // Error
-  static const Color error = Color(0xFFBA1A1A);
-  static const Color onError = Color(0xFFFFFFFF);
-  static const Color errorContainer = Color(0xFFFFDAD6);
-  static const Color onErrorContainer = Color(0xFF93000A);
+  // ---- Aksi berbahaya (selalu merah, bukan oranye) ----
+  static const Color danger = Color(0xFFDC2626);
+  static const Color dangerBg = Color(0xFFFEE2E2);
 
-  // Surface (Warm White)
-  static const Color surface = Color(0xFFFFFBF9);
-  static const Color onSurface = Color(0xFF1F1200);
+  // ---- Netral pendukung ----
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color overlay = Color(0x14000000);
 
-  // Surface Containers
-  static const Color surfaceContainerLowest = Color(0xFFFFFFFF);
-  static const Color surfaceContainerLow = Color(0xFFF9F3EE);
-  static const Color surfaceContainer = Color(0xFFF3EDE8);
-  static const Color surfaceContainerHigh = Color(0xFFEDE7E2);
-  static const Color surfaceContainerHighest = Color(0xFFE7E1DC);
-
-  // Surface Variant
-  static const Color onSurfaceVariant = Color(0xFF51443A);
-
-  // Outline
-  static const Color outline = Color(0xFF837468);
-  static const Color outlineVariant = Color(0xFFD5C9BD);
-
-  // Inverse
-  static const Color inverseSurface = Color(0xFF352010);
-  static const Color inverseOnSurface = Color(0xFFFFF0E5);
-  static const Color inversePrimary = Color(0xFFFF6B35);
-
-  // Shared BoxShadow
   static final BoxShadow cardShadow = BoxShadow(
-    color: const Color(0x0DFFA259),
-    blurRadius: 20,
-    offset: const Offset(0, 4),
+    color: deepOrange.withValues(alpha: 0.06),
+    blurRadius: 18,
+    offset: const Offset(0, 6),
+  );
+
+  static final BoxShadow fabShadow = BoxShadow(
+    color: primary.withValues(alpha: 0.35),
+    blurRadius: 16,
+    offset: const Offset(0, 6),
   );
 }

@@ -1,251 +1,128 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/data/demo_data.dart';
+import '../../../../core/theme/app_layout.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_mascot.dart';
+import '../../../../core/widgets/app_widgets.dart';
 
+/// Riwayat Kunjungan — semua pengukuran anak dari waktu ke waktu.
 class MeasurementHistoryPage extends StatelessWidget {
-  const MeasurementHistoryPage({super.key});
+  final String childName;
+  const MeasurementHistoryPage({super.key, this.childName = 'Aisyah Putri'});
 
   @override
   Widget build(BuildContext context) {
+    final child = DemoData.byName(childName);
+    final visits = child.visits;
+    final firstName = child.name.split(' ').first;
+    final latestGain =
+        visits.length > 1 ? visits.first.weight - visits[1].weight : 0.0;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Riwayat Pengukuran',
-          style: GoogleFonts.lexend(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      backgroundColor: AppColors.background,
+      appBar: const AppBarHeader(title: 'Riwayat Kunjungan'),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.pagePadding,
         children: [
-          // Child info card
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.primaryContainer.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(14),
-            ),
+          AppCard(
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: AppColors.primary,
-                  child: Text(
-                    'B',
-                    style: GoogleFonts.lexend(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.onPrimary,
-                    ),
+                AppAvatar(initial: child.initial),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(child.name, style: AppText.title),
+                      Text(
+                        '${child.gender} · ${child.ageMonths} bulan',
+                        style: AppText.caption,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Budi Santoso',
-                      style: GoogleFonts.lexend(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.onSurface,
-                      ),
-                    ),
-                    Text(
-                      'Lahir: 15 Januari 2022',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: AppColors.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
+                StatusChip(child.status, compact: true),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          // History list
-          _buildHistoryCard(
-            date: '15 Oktober 2025',
-            location: 'Posyandu Melati',
-            weight: '12.5',
-            height: '88',
-            headCircumference: '47',
-            status: 'Sesuai Usia',
-            statusColor: AppColors.secondary,
+          const SizedBox(height: AppSpacing.gapMd),
+          MascotSpeech(
+            mood: latestGain > 0 ? MascotMood.normal : MascotMood.greeting,
+            message: latestGain > 0
+                ? '$firstName naik '
+                    '${latestGain.toStringAsFixed(1).replaceAll('.', ',')} kg '
+                    'sejak kunjungan terakhir. Pertahankan, ya!'
+                : 'Yuk pantau pertumbuhan $firstName dengan kunjungan rutin '
+                    'ke posyandu.',
           ),
-          _buildHistoryCard(
-            date: '15 September 2025',
-            location: 'Posyandu Melati',
-            weight: '12.2',
-            height: '87',
-            headCircumference: '47',
-            status: 'Sesuai Usia',
-            statusColor: AppColors.secondary,
-          ),
-          _buildHistoryCard(
-            date: '15 Agustus 2025',
-            location: 'Posyandu Melati',
-            weight: '12.0',
-            height: '86',
-            headCircumference: '46.5',
-            status: 'Sesuai Usia',
-            statusColor: AppColors.secondary,
-          ),
-          _buildHistoryCard(
-            date: '15 Juli 2025',
-            location: 'Posyandu Melati',
-            weight: '11.8',
-            height: '85',
-            headCircumference: '46',
-            status: 'Perlu Perhatian',
-            statusColor: AppColors.error,
-          ),
-          _buildHistoryCard(
-            date: '15 Juni 2025',
-            location: 'Posyandu Melati',
-            weight: '11.5',
-            height: '84',
-            headCircumference: '46',
-            status: 'Sesuai Usia',
-            statusColor: AppColors.secondary,
-          ),
-          _buildHistoryCard(
-            date: '15 Mei 2025',
-            location: 'Posyandu Melati',
-            weight: '11.2',
-            height: '83',
-            headCircumference: '45.5',
-            status: 'Sesuai Usia',
-            statusColor: AppColors.secondary,
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHistoryCard({
-    required String date,
-    required String location,
-    required String weight,
-    required String height,
-    required String headCircumference,
-    required String status,
-    required Color statusColor,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.outlineVariant.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                date,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.onSurface,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  status,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: statusColor,
+          const SizedBox(height: AppSpacing.gapMd),
+          ...List.generate(visits.length, (i) {
+            final v = visits[i];
+            final gain = i + 1 < visits.length ? v.weight - visits[i + 1].weight : 0.0;
+            final mood = gain > 0
+                ? MascotMood.normal
+                : (gain < 0 ? MascotMood.attention : MascotMood.greeting);
+            final mascot = AppMascot(
+              mood: mood,
+              size: 36,
+              semanticLabel: gain > 0
+                  ? 'Maskot ceria, berat badan naik'
+                  : gain < 0
+                      ? 'Maskot sedih, berat badan turun'
+                      : 'Maskot memantau pertumbuhan',
+            );
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  if (i.isEven) ...[
+                    mascot,
+                    const SizedBox(width: 6),
+                  ],
+                  Expanded(
+                    child: AppCard(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${v.date} · ${v.ageMonths} bln',
+                                  style: AppText.title.copyWith(fontSize: 14),
+                                ),
+                              ),
+                              StatusChip(v.status, compact: true),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'BB ${v.weight.toStringAsFixed(1).replaceAll('.', ',')} kg · '
+                            'TB ${v.height.toStringAsFixed(1).replaceAll('.', ',')} cm'
+                            '${gain > 0 ? ' · naik ${gain.toStringAsFixed(1).replaceAll('.', ',')} kg' : ''}',
+                            style: AppText.caption,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  if (i.isOdd) ...[
+                    const SizedBox(width: 6),
+                    mascot,
+                  ],
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 14,
-                color: AppColors.onSurfaceVariant,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                location,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppColors.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              _buildMeasurementChip(
-                Icons.monitor_weight_outlined,
-                '$weight kg',
-              ),
-              const SizedBox(width: 8),
-              _buildMeasurementChip(
-                Icons.height,
-                '$height cm',
-              ),
-              const SizedBox(width: 8),
-              _buildMeasurementChip(
-                Icons.circle_outlined,
-                '$headCircumference cm',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMeasurementChip(IconData icon, String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: AppColors.onSurfaceVariant),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: AppColors.onSurface,
-            ),
+            );
+          }),
+          const SizedBox(height: AppSpacing.gapXs),
+          InfoNote(
+            '${child.name.split(' ').first} tercatat ${visits.length} kali kunjungan '
+            'dalam ${visits.length} bulan terakhir. Kunjungan berikutnya: '
+            '${DemoData.nextSchedule}.',
           ),
         ],
       ),

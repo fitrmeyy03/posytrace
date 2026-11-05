@@ -1,0 +1,9 @@
+- Prefers designs to feel lively and visually varied rather than monotonous. Confidence: 0.78
+- Expects design changes to be visibly meaningful rather than subtle cosmetic tweaks, and prefers using the specific existing reference asset (e.g., the mascot in Muse) over a substitute or redraw. Confidence: 0.9
+- Prefers swipeable, bank-style cards for switching between profiles, with each card keeping the profile identity and its related data together instead of using separate filter chips. Confidence: 0.88
+- Prefers UI icons to be large and legible enough to recognize easily, especially on mobile screens. Confidence: 0.9
+- Expects illustrations and images (mascots and photos alike) to be displayed fully rather than cropped — when artwork looks cut off, expects the frame proportions/crop focus to be fitted to the artwork's aspect ratio (e.g., "coba lebih paskan lagi untuk gambarnya") instead of leaving a wide frame that trims the subject. Confidence: 0.9
+- Prefers polished, tidy visual layouts with elements arranged cleanly rather than a cluttered or messy appearance. Confidence: 0.76
+- When restyling an existing screen to match a Figma design, expects existing functional content to be preserved rather than dropped (explicitly insisted the BB/U, TB/U, and BB/TB charts stay after a chart-page redesign). Confidence: 0.6
+- Prefers brighter, more vivid fill colors for card/section backgrounds and rejects dark or muted tones (e.g., disliked a dark brown-orange card header and asked for a brighter orange). Confidence: 0.6
+- Expects full parity between the Figma design and the shipped app UI: every element designed in Figma (e.g., the zig-zag alternating mascot beside history rows) must be implemented in the app, not left behind in the design file, and Figma is treated as the source of truth for visual specs including color values (asked for the app palette to be aligned with the Figma palette instead of keeping the old tokens). Confidence: 0.78

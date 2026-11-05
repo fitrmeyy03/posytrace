@@ -1,0 +1,146 @@
+%%{init: {"themeCSS": ".edgePaths path { stroke-linecap: round !important; stroke-linejoin: round !important; stroke-width: 1.8px !important; }"}}%%
+%% ERD Logis PosyTrace
+%% id_pengguna = UID Firebase Authentication
+%% Relasi antarentitas adalah document reference, bukan foreign key yang ditegakkan Firestore.
+%% PK = primary key logis, FK = document reference, UK = unique key yang dijaga aplikasi.
+
+erDiagram
+    POSYANDU ||--o{ PENGGUNA : "memiliki"
+    POSYANDU ||--o{ BALITA : "menaungi"
+    POSYANDU ||--o{ JADWAL : "menyelenggarakan"
+
+    PENGGUNA ||--o{ BALITA : "mengasuh"
+    BALITA ||--o{ PEMERIKSAAN : "memiliki"
+    PENGGUNA ||--o{ PEMERIKSAAN : "mencatat"
+    PENGGUNA |o--o{ PEMERIKSAAN : "memvalidasi"
+    PENGGUNA ||--o{ JADWAL : "membuat"
+    PENGGUNA ||--o{ ARTIKEL : "menulis"
+    PENGGUNA ||--o{ NOTIFIKASI : "menerima"
+    BALITA |o--o{ NOTIFIKASI : "terkait"
+    PENGGUNA ||--o{ TOKEN_FCM : "memiliki"
+
+    POSYANDU {
+        string id_posyandu PK
+        string nama
+        string alamat
+        string kelurahan
+        string kecamatan
+        string penanggung_jawab
+        string no_telepon
+        boolean aktif
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    PENGGUNA {
+        string id_pengguna PK
+        string nama
+        string email UK
+        string peran
+        string no_telepon
+        string nik
+        string id_posyandu FK
+        string foto_profil
+        boolean email_terverifikasi
+        boolean aktif
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    BALITA {
+        string id_balita PK
+        string id_orang_tua FK
+        string id_posyandu FK
+        string nik UK
+        string nama
+        string jenis_kelamin
+        date tanggal_lahir
+        string tempat_lahir
+        string nama_ibu
+        string nama_ayah
+        string alamat
+        float berat_lahir
+        float panjang_lahir
+        boolean aktif
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    PEMERIKSAAN {
+        string id_pemeriksaan PK
+        string id_balita FK
+        string id_kader FK
+        string id_bidan_validator FK
+        date tanggal_periksa
+        int usia_bulan
+        float berat_badan
+        float tinggi_badan
+        float lingkar_kepala
+        float lila
+        string imunisasi
+        string vitamin
+        float zscore_bbu
+        float zscore_tbu
+        float zscore_bbtb
+        string status_gizi
+        boolean risiko_stunting
+        string status_validasi
+        string catatan_validasi
+        datetime divalidasi_pada
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    JADWAL {
+        string id_jadwal PK
+        string id_posyandu FK
+        string id_bidan FK
+        date tanggal
+        string waktu_mulai
+        string waktu_selesai
+        string jenis_kegiatan
+        string lokasi
+        string deskripsi
+        string status
+        boolean notif_h3_terkirim
+        boolean notif_h1_terkirim
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    ARTIKEL {
+        string id_artikel PK
+        string id_bidan FK
+        string judul
+        string kategori
+        string audiens
+        string ringkasan
+        text konten
+        string cover_url
+        int estimasi_baca_menit
+        string status
+        datetime diterbitkan_pada
+        datetime dibuat_pada
+        datetime diperbarui_pada
+    }
+
+    NOTIFIKASI {
+        string id_notifikasi PK
+        string id_pengguna FK
+        string id_balita FK
+        string tipe
+        string id_referensi
+        string judul
+        string pesan
+        boolean dibaca
+        datetime dibuat_pada
+        datetime dibaca_pada
+    }
+
+    TOKEN_FCM {
+        string id_token PK
+        string id_pengguna FK
+        string token UK
+        string platform
+        datetime diperbarui_pada
+    }

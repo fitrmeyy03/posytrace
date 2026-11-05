@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:posytrace_skripsi/core/models/user_role.dart';
-import 'package:posytrace_skripsi/core/shared/pages/change_password_page.dart';
-import 'package:posytrace_skripsi/core/shared/pages/profile_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/change_password_page.dart';
+import 'package:posytrace_skripsi/features/shared/presentation/pages/profile_page.dart';
 import 'package:posytrace_skripsi/features/auth/presentation/pages/login_page.dart';
 
 Widget _app(UserRole role) => MaterialApp(

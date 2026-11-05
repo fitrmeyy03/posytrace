@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
-import '../../data/demo_data.dart';
-import '../../models/user_role.dart';
-import '../../theme/app_layout.dart';
-import '../../theme/app_spacing.dart';
-import '../../theme/app_theme.dart';
-import '../../widgets/app_widgets.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/data/demo_data.dart';
+import '../../../../core/models/user_role.dart';
+import '../../../../core/theme/app_layout.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_widgets.dart';
 import 'change_password_page.dart';
 
 /// Profil — data akun, unit terikat, ganti kata sandi, keluar.

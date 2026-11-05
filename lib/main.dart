@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'core/shared/pages/child_detail_page.dart';
+import 'features/shared/presentation/pages/child_detail_page.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/kader/presentation/pages/kader_main_shell.dart';

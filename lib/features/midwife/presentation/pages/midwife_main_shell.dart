@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/user_role.dart';
-import '../../../../core/shared/pages/profile_page.dart';
+import '../../../../features/shared/presentation/pages/profile_page.dart';
 import '../../../../core/widgets/app_widgets.dart';
 import 'midwife_articles_page.dart';
 import 'midwife_dashboard_page.dart';
 import 'surveillance_page.dart';
 
-/// Shell Bidan — 4 menu bawah: Beranda, Balita, Artikel, Profil.
+/// Shell Bidan â€” 4 menu bawah: Beranda, Balita, Artikel, Profil.
 class MidwifeMainShell extends StatefulWidget {
   const MidwifeMainShell({super.key});
 

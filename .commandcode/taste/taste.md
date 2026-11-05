@@ -1,1 +1,0 @@
-- Prefers reusing existing tool integrations/configuration (such as MCP servers already connected in another client) in the current environment where possible, rather than assuming a separate setup or authentication is required. Confidence: 0.84

@@ -21,6 +21,20 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+    # Aturan tambahan yang fokus menangkap bug, bukan sekadar gaya penulisan.
+    - avoid_dynamic_calls
+    - avoid_void_async
+    - cancel_subscriptions
+    - close_sinks
+    - throw_in_finally
+    - unnecessary_statements
+    - use_build_context_synchronously
+
+    # `discarded_futures` dan `unawaited_futures` sengaja tidak diaktifkan:
+    # keduanya menandai setiap Navigator.push dan showModalBottomSheet, padahal
+    # pola fire-and-forget itu wajar di Flutter. Kalau nanti diaktifkan, bungkus
+    # pemanggilan yang memang sengaja tidak ditunggu dengan `unawaited(...)`.
+
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 

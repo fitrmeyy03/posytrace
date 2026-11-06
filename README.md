@@ -56,10 +56,19 @@ Penjelasan lengkap dan aturan penempatan kode ada di [docs/architecture.md](docs
 
 ## Alur kerja Git
 
-- `main` selalu dalam kondisi lulus `analyze` dan `test`.
-- Pekerjaan dilakukan di branch `feat/...` atau `fix/...`, lalu digabung lewat pull request.
-- Penanda rilis memakai tag `vX.Y.Z`, bukan branch terpisah.
-- Riwayat perubahan dicatat di [CHANGELOG.md](CHANGELOG.md).
+Repositori memakai tiga branch tetap yang tidak dihapus setelah merge:
+
+| Branch | Peran |
+| --- | --- |
+| `main` | Production — stabil, siap sidang. PR + CI wajib, force-push dilarang |
+| `staging` | Pra-rilis — uji sebelum masuk `main` |
+| `develop` | Integrasi harian |
+
+Pekerjaan dilakukan di branch sementara `feat/...`, `fix/...`, `docs/...`, atau `chore/...`,
+lalu naik tahap lewat pull request: `feat` → `develop` → `staging` → `main`. Rilis ditandai
+tag `vX.Y.Z`. Riwayat perubahan dicatat di [CHANGELOG.md](CHANGELOG.md).
+
+Detail perintah dan aturannya ada di [docs/git-workflow.md](docs/git-workflow.md).
 
 ## Dokumen pendukung
 
